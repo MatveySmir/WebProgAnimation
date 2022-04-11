@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<br>
+<select id="figure" onchange="">
+    <option disabled selected>Выбрать</option>
+    <option value="triangle">Треугольник</option>
+    <option value="rectangle">Прямоугольник</option>
+</select>
+
+<select id="trajectory" onchange="Launch();">
+    <option disabled selected>Выбрать</option>
+    <option value="RectRight">Прямоугольник вправо</option>
+    <option value="RectLeft">Прямоугольник влево</option>
+</select>
+<br><br>
+
+<canvas id="app" width="500" height="500" style="background-color: #ffbebe;">
+</canvas>
+
+<script>
+    const FigureTypeElement = document.getElementById('figure');
+    const TrajectoryTypeElement = document.getElementById("trajectory");
+    const cnv = document.getElementById('app');
+    const ctx = cnv.getContext('2d');
+    ctx.fillStyle = "#868686";
+    let objx;
+    let objy;
+    let op1x; let op1y;
+    let op2x; let op2y;
+    let ts=0.00;
+    let step=0;
+    function DrawFigure() {
+        ctx.clearRect(0, 0, cnv.offsetWidth, cnv.offsetHeight);
+        ctx.fillStyle = '#3c7731';
+        switch (FigureTypeElement.value) {
+            case "triangle":
+                ctx.beginPath();
+                ctx.moveTo(objx + 160, objy);
+                ctx.lineTo(objx + 80, objy + 80);
+                ctx.lineTo(objx, objy );
+                ctx.fill();
+                break;
+            case "rectangle":
+                ctx.fillRect(objx, objy, 80, 160);
+                break;
+        }
+    }
+    function Launch()
+    {
+        ts=0;
+        if(TrajectoryTypeElement.value=="RectRight") {
+            objx = 0;
+            objy = 0;
+            step = 1;
+            setTimeout(FirstTrajectory(), 11);
+        }
+        else
+        {
+            objx = 0;
+            objy = 0;
+            step = 1;
+            setTimeout(SecondTrajectory(), 11);
+        }
+    }
+    function FirstTrajectory(){
+        switch (step)
+        {
+            case 1:
+                op1x=0;op1y=0;
+                if(FigureTypeElement.value=="triangle"){op2x=500-160;op2y=0;}else{op2x=500-80;op2y=0;}
+                break;
+            case 2:
+                if(FigureTypeElement.value=="triangle"){op1x=500-160;op1y=0;}else{op1x=500-80;op1y=0;}
+                if(FigureTypeElement.value=="triangle"){op2x=500-160;op2y=500-80;}else{op2x=500-80;op2y=500-160;}
+                break;
+            case 3:
+                if(FigureTypeElement.value=="triangle"){op1x=500-160;op1y=500-80;}else{op1x=500-80;op1y=500-160;}
+                if(FigureTypeElement.value=="triangle"){op2x=0;op2y=500-80;}else{op2x=0;op2y=500-160;}
+                break;
+            case 4:
+                if(FigureTypeElement.value=="triangle"){op1x=0;op1y=500-80;}else{op1x=0;op1y=500-160;}
+                op2x=0;op2y=0;
+                break;
+        }
+        if(ts<=1)
+        {
+            objx=(1-ts)*op1x+ts*op2x;
+            objy=(1-ts)*op1y+ts*op2y;
+            ts+=0.015;
+        }else if(ts>1){
+            ts=0;
+            if(step<4){step++;}else if(step==4){step=1;}
+        }
+        DrawFigure();
+        if(TrajectoryTypeElement.value=="RectRight"){setTimeout(FirstTrajectory, 10);}
+    }
+
+    function SecondTrajectory(){
+        switch (step)
+        {
+            case 1:
+                op1x=0;op1y=0;
+                if(FigureTypeElement.value=="triangle"){op2x=0;op2y=500-80;}else{op2x=0;op2y=500-160;}
+                break;
+            case 2:
+                if(FigureTypeElement.value=="triangle"){op1x=0;op1y=500-80;}else{op1x=0;op1y=500-160;}
+                if(FigureTypeElement.value=="triangle"){op2x=500-160;op2y=500-80;}else{op2x=500-80;op2y=500-160;}
+                break;
+            case 3:
+                if(FigureTypeElement.value=="triangle"){op1x=500-160;op1y=500-80;}else{op1x=500-80;op1y=500-160;}
+                if(FigureTypeElement.value=="triangle"){op2x=500-160;op2y=0;}else{op2x=500-80;op2y=0;}
+                break;
+            case 4:
+                if(FigureTypeElement.value=="triangle"){op1x=500-160;op1y=0;}else{op1x=500-80;op1y=0;}
+                op2x=0;op2y=0;
+                break;
+        }
+        if(ts<=1)
+        {
+            objx=(1-ts)*op1x+ts*op2x;
+            objy=(1-ts)*op1y+ts*op2y;
+            ts+=0.015;
+        }else if(ts>1){
+            ts=0;
+            if(step<4){step++;}else if(step==4){step=1;}
+        }
+        DrawFigure();
+        if(TrajectoryTypeElement.value=="RectLeft"){setTimeout(SecondTrajectory, 10);}
+    }
+</script>
+</body>
+</html>
